@@ -1,0 +1,6 @@
+This is not part of BEGIN:VCARD
+BEGIN:VCARD
+VERSION:4.0
+not real END:VCARD
+END:VCARD
+This is also not part of VCARD
