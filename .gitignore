@@ -18,6 +18,7 @@
 /public/assets/
 /config/secret_settings.yml
 
+lib/ragel/*.rb
 *.log
 .DS_Store
 .sass-cache/
