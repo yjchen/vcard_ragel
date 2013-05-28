@@ -5,6 +5,15 @@ class TestVCardContentTokenizer < MiniTest::Test
   def setup
   end
 
+  def test_content_folding
+    path = "test/data/content_folding.vcf"
+    t = VCardRegal::ContentTokenizer.new(path)
+    t.perform do |content, version|
+      assert_equal "4.0", version
+      assert_equal "abcdef123\n", content
+    end
+  end
+
   def test_content_one_exact
     path = "test/data/content_one_exact.vcf"
     t = VCardRegal::ContentTokenizer.new(path)

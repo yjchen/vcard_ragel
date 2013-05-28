@@ -57,6 +57,7 @@ class ContentTokenizer
     elsif path.is_a?(StringIO) || path.is_a?(IO)
       @f = path
     end
+    @folding = true
     %% write data;
     # % (this fixes syntax highlighting)
   end
@@ -67,6 +68,11 @@ class ContentTokenizer
 
   def ragel_emit(s)
     @content = s
+
+    if @folding
+      @content = @content.gsub(/(\n|\r\n)[ \t]/, '')
+    end
+
     if block_given?
       yield @content, @version
     end
@@ -74,10 +80,12 @@ class ContentTokenizer
     @content = nil
   end
 
-  def perform
+  def perform(folding: true)
     # So that ragel doesn't try to get it from data.length
     pe = :ignored
     eof = :ignored
+
+    @folding = folding
 
     %% write init;
     # % (this fixes syntax highlighting)

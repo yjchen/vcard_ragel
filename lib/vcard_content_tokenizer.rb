@@ -21,8 +21,9 @@ class ContentTokenizer
     elsif path.is_a?(StringIO) || path.is_a?(IO)
       @f = path
     end
+    @folding = true
     
-# line 26 "lib/vcard_content_tokenizer.rb"
+# line 27 "lib/vcard_content_tokenizer.rb"
 class << self
 	attr_accessor :_content_tokenizer_actions
 	private :_content_tokenizer_actions, :_content_tokenizer_actions=
@@ -154,7 +155,7 @@ end
 self.content_tokenizer_en_main = 0;
 
 
-# line 61 "lib/vcard_content_tokenizer.rl"
+# line 62 "lib/vcard_content_tokenizer.rl"
     # % (this fixes syntax highlighting)
   end
 
@@ -164,6 +165,11 @@ self.content_tokenizer_en_main = 0;
 
   def ragel_emit(s)
     @content = s
+
+    if @folding
+      @content = @content.gsub(/(\n|\r\n)[ \t]/, '')
+    end
+
     if block_given?
       yield @content, @version
     end
@@ -171,20 +177,22 @@ self.content_tokenizer_en_main = 0;
     @content = nil
   end
 
-  def perform
+  def perform(folding: true)
     # So that ragel doesn't try to get it from data.length
     pe = :ignored
     eof = :ignored
 
+    @folding = folding
+
     
-# line 181 "lib/vcard_content_tokenizer.rb"
+# line 189 "lib/vcard_content_tokenizer.rb"
 begin
 	p ||= 0
 	pe ||= data.length
 	cs = content_tokenizer_start
 end
 
-# line 83 "lib/vcard_content_tokenizer.rl"
+# line 91 "lib/vcard_content_tokenizer.rl"
     # % (this fixes syntax highlighting)
 
     leftover = []
@@ -203,7 +211,7 @@ end
       p = 0
       pe = data.length
       
-# line 207 "lib/vcard_content_tokenizer.rb"
+# line 215 "lib/vcard_content_tokenizer.rb"
 begin
 	_klen, _trans, _keys, _acts, _nacts = nil
 	_goto_level = 0
@@ -318,7 +326,7 @@ when 3 then
       my_ts = nil
       my_te = nil    
     		end
-# line 322 "lib/vcard_content_tokenizer.rb"
+# line 330 "lib/vcard_content_tokenizer.rb"
 			end # action switch
 		end
 	end
@@ -341,7 +349,7 @@ when 3 then
 	end
 	end
 
-# line 101 "lib/vcard_content_tokenizer.rl"
+# line 109 "lib/vcard_content_tokenizer.rl"
       # % (this fixes syntax highlighting)
       if my_ts
         leftover = data[my_ts..-1]
